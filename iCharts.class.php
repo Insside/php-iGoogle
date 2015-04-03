@@ -1,34 +1,25 @@
 <?php
 
-/*
- * Copyright (c) 2015, Alexis
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are met:
- *
- * * Redistributions of source code must retain the above copyright notice, this
- *   list of conditions and the following disclaimer.
- * * Redistributions in binary form must reproduce the above copyright notice,
- *   this list of conditions and the following disclaimer in the documentation
- *   and/or other materials provided with the distribution.
- *
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
- * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
- * LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
- * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
- * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
- * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
- * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
- * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
- * POSSIBILITY OF SUCH DAMAGE.
- */
-
 /**
- * Description of iCharts
+ * Copyright (c) 2015, Jose Alexis Correa valencia
+ * Except as otherwise noted, the content of this library  is licensed under the Creative Commons 
+ * Attribution 3.0 License, and code samples are licensed under the Apache 2.0 License.
+ * @link http://creativecommons.org/licenses/by/3.0/
  *
+ * THE WORK (AS DEFINED BELOW) IS PROVIDED UNDER THE TERMS OF THIS CREATIVE COMMONS 
+ * PUBLIC LICENSE ("CCPL" OR "LICENSE"). THE WORK IS PROTECTED BY COPYRIGHT AND/OR OTHER 
+ * APPLICABLE LAW. ANY USE OF THE WORK OTHER THAN AS AUTHORIZED UNDER THIS LICENSE OR 
+ * COPYRIGHT LAW IS PROHIBITED. BY EXERCISING ANY RIGHTS TO THE WORK PROVIDED HERE, 
+ * YOU ACCEPT AND AGREE TO BE BOUND BY THE TERMS OF THIS LICENSE. TO THE EXTENT THIS 
+ * LICENSE MAY BE CONSIDERED TO BE A CONTRACT, THE LICENSOR GRANTS YOU THE RIGHTS 
+ * CONTAINED HERE IN CONSIDERATION OF YOUR ACCEPTANCE OF SUCH TERMS AND CONDITIONS.
+ * @link http://creativecommons.org/licenses/by-nd/3.0/us/legalcode
+ * 
+ *  php - iCharts
+ * Esta clase puede incrustar gráficos en una página web con Google Charts API. Puede generar 
+ * HTML y JavaScript para realizar llamadas a la API de Google Charts para mostrar varios tipos de 
+ * gráficos estadísticos. Actualmente soporta la incrustación de gráficos de tipo pastel, columna, 
+ * área, línea, barras, burbujas, marcadores geográficos y caída libre.
  * @author Jose Alexis Correa Valencia <insside@facebook.com> 
  * @package iGoogle 
  * @see http://code.google.com/apis/chart/ 
@@ -36,25 +27,19 @@
  */
 class iCharts {
 
+  const jsapi = '<script src="https://www.google.com/jsapi" type="text/javascript"></script>\n';
+  const eol = "\n"; // Salto de linea
+
+  private static $libreria = false;
+
   /**
-   * Esta clase puede incrustar gráficos en una página web con Google Charts API. Puede generar 
-   * HTML y JavaScript para realizar llamadas a la API de Google Charts para mostrar varios tipos de 
-   * gráficos estadísticos. Actualmente soporta la incrustación de gráficos de tipo pastel, columna, 
-   * área, línea, barras, burbujas, marcadores geográficos y caída libre.
-   */
-  
-  const jsapi='<script src="https://www.google.com/jsapi" type="text/javascript"></script>\n';
-  private static $libreria= false;
-  
-  /**
-   * 
    * obtener la biblioteca JS que necesitamos para generar gráficos
    * @param boolean $force forces the inclusion 
    * @return string 
    */
   public static function include_library($forzar = false) {
-    if (self::$libreria== false OR $forzar == true) {
-      self::$libreria= true;
+    if (self::$libreria == false OR $forzar == true) {
+      self::$libreria = true;
       return(self::jsapi);
     }
     return(false);
@@ -94,30 +79,30 @@ class iCharts {
     //Start chart JS generation 
     $ret = '';
     $ret.=self::include_library();
-    $ret.='<script type="text/javascript">' . PHP_EOL;
+    $ret.='<script type="text/javascript">' . self::eol;
 
     //depending on the chart type load different vars 
     switch ($chart_type) {
       case 'GeoChart':
-        $ret.='google.load("visualization", "1", {packages:["geochart"]});' . PHP_EOL;
-        $ret.='google.setOnLoadCallback(drawMarkersMap);' . PHP_EOL;
-        $ret.='function drawMarkersMap() {' . PHP_EOL;
+        $ret.='google.load("visualization", "1", {packages:["geochart"]});' . self::eol;
+        $ret.='google.setOnLoadCallback(drawMarkersMap);' . self::eol;
+        $ret.='function drawMarkersMap() {' . self::eol;
         break;
       case 'Gauge':
-        $ret.='google.load("visualization", "1", {packages:["gauge"]});' . PHP_EOL;
-        $ret.='google.setOnLoadCallback(drawChart);' . PHP_EOL;
-        $ret.='function drawChart() {' . PHP_EOL;
+        $ret.='google.load("visualization", "1", {packages:["gauge"]});' . self::eol;
+        $ret.='google.setOnLoadCallback(drawChart);' . self::eol;
+        $ret.='function drawChart() {' . self::eol;
         break;
       default:
-        $ret.='google.load("visualization", "1", {packages:["corechart"]});' . PHP_EOL;
-        $ret.='google.setOnLoadCallback(drawChart);' . PHP_EOL;
-        $ret.='function drawChart() {' . PHP_EOL;
+        $ret.='google.load("visualization", "1", {packages:["corechart"]});' . self::eol;
+        $ret.='google.setOnLoadCallback(drawChart);' . self::eol;
+        $ret.='function drawChart() {' . self::eol;
     }
 
-    $ret.='var data = new google.visualization.DataTable();' . PHP_EOL;
+    $ret.='var data = new google.visualization.DataTable();' . self::eol;
     //chart columns 
     foreach ($columns as $k => $v) {
-      $ret.="data.addColumn('" . $v . "', '" . $k . "');" . PHP_EOL;
+      $ret.="data.addColumn('" . $v . "', '" . $k . "');" . self::eol;
     }
 
     //adding data to the chart 
@@ -129,7 +114,7 @@ class iCharts {
       }
       $ret.='],';
     }
-    $ret.=']);' . PHP_EOL;
+    $ret.=']);' . self::eol;
 
     //adding the options 
     $ret.='var options = {';
@@ -138,12 +123,12 @@ class iCharts {
       $ret.= (strpos($v, '{') !== FALSE OR is_numeric($k)) ? $v : '\'' . $v . '\'';
       $ret.= ',';
     }
-    $ret.='};' . PHP_EOL;
+    $ret.='};' . self::eol;
 
     //draw the chart 
-    $ret.='var chart = new google.visualization.' . $chart_type . '(document.getElementById(\'' . $chart_div . '\'));' . PHP_EOL;
-    $ret.='chart.draw(data, options);' . PHP_EOL;
-    $ret.='}</script>' . PHP_EOL . '<div id="' . $chart_div . '"></div>' . PHP_EOL;
+    $ret.='var chart = new google.visualization.' . $chart_type . '(document.getElementById(\'' . $chart_div . '\'));' . self::eol;
+    $ret.='chart.draw(data, options);' . self::eol;
+    $ret.='}</script>' . self::eol . '<div id="' . $chart_div . '"></div>' . self::eol;
 
     return $ret;
   }
