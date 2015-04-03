@@ -27,7 +27,7 @@
  */
 
 /**
- * Description of Charts
+ * Description of iCharts
  *
  * @author Jose Alexis Correa Valencia <insside@facebook.com> 
  * @package iGoogle 
@@ -37,25 +37,27 @@
 class iCharts {
 
   /**
-   * 
-   * Used to know if we already used the google js api somewhere so we don't call it twice 
-   * @var boolean 
+   * Esta clase puede incrustar gráficos en una página web con Google Charts API. Puede generar 
+   * HTML y JavaScript para realizar llamadas a la API de Google Charts para mostrar varios tipos de 
+   * gráficos estadísticos. Actualmente soporta la incrustación de gráficos de tipo pastel, columna, 
+   * área, línea, barras, burbujas, marcadores geográficos y caída libre.
    */
-  private static $included_lib = FALSE;
-
+  
+  const jsapi='<script src="https://www.google.com/jsapi" type="text/javascript"></script>\n';
+  private static $libreria= false;
+  
   /**
    * 
-   * get the JS library that we need to generate charts 
+   * obtener la biblioteca JS que necesitamos para generar gráficos
    * @param boolean $force forces the inclusion 
    * @return string 
    */
-  public static function include_library($force = FALSE) {
-    if (self::$included_lib == FALSE OR $force == TRUE) {
-      self::$included_lib = TRUE;
-      return '<script src="https://www.google.com/jsapi" type="text/javascript"></script>' . PHP_EOL;
+  public static function include_library($forzar = false) {
+    if (self::$libreria== false OR $forzar == true) {
+      self::$libreria= true;
+      return(self::jsapi);
     }
-
-    return FALSE;
+    return(false);
   }
 
   /**
